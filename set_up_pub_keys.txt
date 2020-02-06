@@ -1,0 +1,11 @@
+#!/bin/bash
+
+IFS=$'\r\n'
+for addr in $(cat ips.txt)
+do
+	echo "Sätter up VM for IP address "$addr
+	cat ~/.ssh/id_rsa.pub | ssh -o StrictHostKeyChecking=no dl@$addr 'cat >> .ssh/authorized_keys && echo "Key copied"'
+done
+
+echo "Alla nycklar kopierade"
+

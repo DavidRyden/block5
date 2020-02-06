@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+# ZIP övningarna (BYT UT NAMN)
+zip -r transfer.zip *
+
+IFS=$'\r\n'
+for addr in $(cat ips.txt)
+do
+	echo "Connecting to IP address "$addr
+
+
+	# Skapa mappar för filöverföring
+	ssh -o StrictHostKeyChecking=no dl@$addr "mkdir ds_programmet_block5 && cd ds_programmet_block5"
+
+	sftp -o StrictHostKeyChecking=no dl@$addr <<EOF
+cd ds_programmet_block5
+put transfer.zip  
+exit
+EOF
+
+# Unzip & Installera dependencies
+ssh -o StrictHostKeyChecking=no dl@$addr "cd ds_programmet_block5 && unzip transfer.zip && chmod 777 install_python_dependencies.sh && ./install_python_dependencies.sh"
+
+done
+
+echo "Alla VMs uppsatta"
